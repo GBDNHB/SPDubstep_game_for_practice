@@ -548,6 +548,552 @@
   line-height: 1.6;
 }
 
+/* ===== Buttons: secondary + header pause ===== */
+.btn-secondary {
+  background: var(--color-surface-alt);
+  color: var(--color-primary-dark);
+  border: 1.5px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+  background: var(--color-surface);
+}
+
+.start-card__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.app-header__pause {
+  margin-left: auto;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  color: #eef2f7;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.app-header__pause:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== Info screens: Rules / Records ===== */
+.info-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 32px;
+  max-width: 560px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.info-card h2 {
+  font-size: 22px;
+  color: var(--color-primary-dark);
+  text-align: center;
+}
+
+.info-section h3 {
+  font-size: 15px;
+  color: var(--color-primary-dark);
+  margin-bottom: 4px;
+}
+
+.info-section p {
+  font-size: 14px;
+  color: var(--color-text);
+  line-height: 1.55;
+}
+
+.info-card__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.info-card__actions .btn {
+  flex: 1;
+}
+
+.records-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.record-item {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.record-item__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.record-item__date {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.record-item__stats {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.record-badge {
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.record-badge--success {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.record-badge--danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.record-badge--warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.record-badge--neutral {
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+/* ===== Tabs ===== */
+.tab-bar {
+  display: flex;
+  gap: 8px;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 6px;
+  box-shadow: var(--shadow-soft);
+}
+
+.tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.tab-btn--active {
+  background: var(--color-surface-alt);
+  color: var(--color-primary-dark);
+}
+
+.tab-badge {
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+
+.tab-badge--warning {
+  background: var(--color-warning);
+}
+
+/* ===== Ticket list ===== */
+.ticket-list {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ticket-list__hint {
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.ticket-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ticket-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.ticket-item__title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.ticket-item--done .ticket-item__title {
+  color: var(--color-text-muted);
+}
+
+.ticket-item__row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ticket-item__btn {
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ticket-item--done .ticket-item__btn {
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.ticket-item__prompt {
+  font-size: 13.5px;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.ticket-item__options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ticket-option-btn {
+  text-align: left;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.ticket-option-btn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface-alt);
+}
+
+.ticket-item__result {
+  font-size: 13px;
+  line-height: 1.5;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.ticket-item__result--correct {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.ticket-item__result--wrong {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.ticket-item__row--split {
+  justify-content: space-between;
+}
+
+/* ===== Ticket mini-game: quiz ===== */
+.ticket-item__quiz-options {
+  display: flex;
+  gap: 10px;
+}
+
+.ticket-quiz-btn {
+  flex: 1;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ticket-quiz-btn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface-alt);
+}
+
+/* ===== Ticket mini-game: password ===== */
+.password-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.password-chip {
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.password-chip--selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.password-meter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.password-meter__track {
+  flex: 1;
+  height: 8px;
+  background: var(--color-surface-alt);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.password-meter__fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.password-meter__fill--weak { background: var(--color-danger); }
+.password-meter__fill--medium { background: var(--color-warning); }
+.password-meter__fill--strong { background: var(--color-success); }
+.password-meter__fill--very-strong { background: var(--color-primary); }
+
+.password-meter__label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* ===== Ticket mini-game: sequence ===== */
+.sequence-chosen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sequence-chosen li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.sequence-chosen__index {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sequence-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sequence-option-btn {
+  text-align: left;
+  border: 1.5px dashed var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.sequence-option-btn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface-alt);
+}
+
+.sequence-reset-btn {
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ===== Ticket mini-game: log scan ===== */
+.log-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.log-line {
+  text-align: left;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 6px;
+  padding: 9px 11px;
+  font-size: 12.5px;
+}
+
+.log-line:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface-alt);
+}
+
+/* ===== Day summary note ===== */
+.day-summary__note {
+  font-size: 13.5px;
+  color: var(--color-warning);
+  background: var(--color-warning-bg);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+/* ===== Friday timer ===== */
+.friday-timer {
+  height: 6px;
+  background: var(--color-surface-alt);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.friday-timer__fill {
+  height: 100%;
+  background: var(--color-warning);
+  transition: width 0.1s linear;
+}
+
+.friday-timer__fill--critical {
+  background: var(--color-danger);
+}
+
+/* ===== Pause menu ===== */
+.pause-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 22, 33, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+}
+
+.pause-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 28px;
+  max-width: 360px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
+}
+
+.pause-card h2 {
+  font-size: 20px;
+  color: var(--color-primary-dark);
+}
+
+.pause-card__day {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.pause-card__stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--color-text);
+  background: var(--color-surface-alt);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 480px) {
   .card-stack {

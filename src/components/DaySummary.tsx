@@ -1,9 +1,12 @@
+import { TICKET_PENALTY } from '../game/logic';
+
 interface DaySummaryProps {
   weekday: string;
   totalCards: number;
   mistakes: number;
   security: number;
   productivity: number;
+  unfinishedTickets: number;
   annaLine: string;
   isLastDay: boolean;
   onContinue: () => void;
@@ -15,6 +18,7 @@ export function DaySummary({
   mistakes,
   security,
   productivity,
+  unfinishedTickets,
   annaLine,
   isLastDay,
   onContinue,
@@ -41,6 +45,11 @@ export function DaySummary({
             <div className="stat-tile__value">{productivity}%</div>
           </div>
         </div>
+        {unfinishedTickets > 0 && (
+          <p className="day-summary__note">
+            Незакрытых тикетов: {unfinishedTickets} (продуктивность −{unfinishedTickets * TICKET_PENALTY}%)
+          </p>
+        )}
         <div className="speaker-bubble">
           <div className="speaker-avatar">А</div>
           <div>

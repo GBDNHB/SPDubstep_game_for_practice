@@ -2,15 +2,29 @@ import { useEffect, useRef, useState } from 'react';
 import { CARDS } from './game/cards';
 import { DAYS, getDayConfig, getEndOfDayLine } from './game/days';
 import { ENDINGS } from './game/endings';
-import { applyDecision, buildDayDeck, checkFinalOutcome, checkInstantOutcome } from './game/logic';
-import type { Action, Card, Outcome } from './game/types';
+import {
+  applyDecision,
+  applyTicketPenalty,
+  buildDayDeck,
+  checkFinalOutcome,
+  checkInstantOutcome,
+  clamp,
+  TICKET_MISTAKE_PENALTY,
+} from './game/logic';
+import { pickDailyTickets } from './game/tickets';
+import { clearRecords, loadRecords, saveRecord } from './game/records';
+import type { Action, Card, GameRecord, Outcome, Ticket } from './game/types';
 import { StartScreen } from './components/StartScreen';
+import { RulesScreen } from './components/RulesScreen';
+import { RecordsScreen } from './components/RecordsScreen';
 import { DayIntro } from './components/DayIntro';
 import { GameScreen } from './components/GameScreen';
+import { PauseMenu } from './components/PauseMenu';
 import { DaySummary } from './components/DaySummary';
 import { EndingScreen } from './components/EndingScreen';
+import type { WorkTab } from './components/TabBar';
 
-type Screen = 'start' | 'day-intro' | 'game' | 'day-summary' | 'ending';
+type Screen = 'start' | 'rules' | 'records' | 'day-intro' | 'game' | 'day-summary' | 'ending';
 
 interface FeedbackState {
   action: Action;
@@ -34,15 +48,38 @@ export default function App() {
   const [deck, setDeck] = useState<Card[]>(() => initialDeck(FIRST_DAY));
   const [index, setIndex] = useState(0);
   const [mistakesToday, setMistakesToday] = useState(0);
+  const [mistakesTotal, setMistakesTotal] = useState(0);
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
+  const [ticketsToday, setTicketsToday] = useState<Ticket[]>(() => pickDailyTickets(FIRST_DAY));
+  const [activeTab, setActiveTab] = useState<WorkTab>('mail');
+  const [paused, setPaused] = useState(false);
+  const [records, setRecords] = useState<GameRecord[]>(() => loadRecords());
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const recordSavedRef = useRef(false);
 
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (screen === 'ending' && outcome && !recordSavedRef.current) {
+      recordSavedRef.current = true;
+      const record: GameRecord = {
+        date: new Date().toISOString(),
+        outcome,
+        security,
+        productivity,
+        mistakesTotal,
+      };
+      setRecords(saveRecord(record));
+    }
+    if (screen !== 'ending') {
+      recordSavedRef.current = false;
+    }
+  }, [screen, outcome, security, productivity, mistakesTotal]);
 
   function resetGame() {
     setSecurity(100);
@@ -51,8 +88,12 @@ export default function App() {
     setDeck(initialDeck(FIRST_DAY));
     setIndex(0);
     setMistakesToday(0);
+    setMistakesTotal(0);
     setFeedback(null);
     setOutcome(null);
+    setTicketsToday(pickDailyTickets(FIRST_DAY));
+    setActiveTab('mail');
+    setPaused(false);
   }
 
   function handleStart() {
@@ -64,13 +105,40 @@ export default function App() {
     setScreen('game');
   }
 
+  function handleToggleChore(id: string) {
+    setTicketsToday((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+  }
+
+  function handleResolveTicket(id: string, success: boolean, resultText: string) {
+    const ticket = ticketsToday.find((t) => t.id === id);
+    if (!ticket || ticket.done) return;
+
+    setTicketsToday((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, done: true, resolvedCorrectly: success, resultText } : t)),
+    );
+
+    if (!success) {
+      const newSecurity = clamp(security - TICKET_MISTAKE_PENALTY);
+      setSecurity(newSecurity);
+      setMistakesTotal((m) => m + 1);
+      const instant = checkInstantOutcome(newSecurity, productivity);
+      if (instant) {
+        setOutcome(instant);
+        setScreen('ending');
+      }
+    }
+  }
+
   function handleDecide(action: Action) {
     if (feedback) return;
     const card = deck[index];
     const result = applyDecision(card, action, security, productivity);
     setSecurity(result.security);
     setProductivity(result.productivity);
-    if (!result.isCorrect) setMistakesToday((m) => m + 1);
+    if (!result.isCorrect) {
+      setMistakesToday((m) => m + 1);
+      setMistakesTotal((m) => m + 1);
+    }
     setFeedback({
       action,
       isCorrect: result.isCorrect,
@@ -89,6 +157,16 @@ export default function App() {
       }
       const nextIndex = index + 1;
       if (nextIndex >= deck.length) {
+        const unfinished = ticketsToday.filter((t) => !t.done).length;
+        const finalProductivity =
+          unfinished > 0 ? applyTicketPenalty(result.productivity, unfinished) : result.productivity;
+        setProductivity(finalProductivity);
+        const dayEndOutcome = checkInstantOutcome(result.security, finalProductivity);
+        if (dayEndOutcome) {
+          setOutcome(dayEndOutcome);
+          setScreen('ending');
+          return;
+        }
         setScreen('day-summary');
       } else {
         setIndex(nextIndex);
@@ -107,8 +185,17 @@ export default function App() {
     setDeck(initialDeck(nextDay));
     setIndex(0);
     setMistakesToday(0);
+    setTicketsToday(pickDailyTickets(nextDay));
+    setActiveTab('mail');
     setScreen('day-intro');
   }
+
+  function handleClearRecords() {
+    clearRecords();
+    setRecords([]);
+  }
+
+  const unfinishedTicketsToday = ticketsToday.filter((t) => !t.done).length;
 
   return (
     <>
@@ -116,26 +203,68 @@ export default function App() {
         <div className="app-header__logo">
           Техно<span>Сфера</span> · Почта
         </div>
-        <div className="app-header__role">Отдел ИБ · Стажёр</div>
+        {screen === 'game' ? (
+          <button className="app-header__pause" onClick={() => setPaused(true)}>
+            Пауза
+          </button>
+        ) : (
+          <div className="app-header__role">Отдел ИБ · Стажёр</div>
+        )}
       </header>
       <main className="app-main">
-        {screen === 'start' && <StartScreen onStart={handleStart} />}
+        {screen === 'start' && (
+          <StartScreen
+            onStart={handleStart}
+            onShowRules={() => setScreen('rules')}
+            onShowRecords={() => setScreen('records')}
+          />
+        )}
+
+        {screen === 'rules' && <RulesScreen onBack={() => setScreen('start')} />}
+
+        {screen === 'records' && (
+          <RecordsScreen
+            records={records}
+            onBack={() => setScreen('start')}
+            onClear={handleClearRecords}
+          />
+        )}
 
         {screen === 'day-intro' && (
           <DayIntro dayConfig={getDayConfig(currentDay)} onContinue={handleDayIntroContinue} />
         )}
 
         {screen === 'game' && deck[index] && (
-          <GameScreen
-            card={deck[index]}
-            weekday={getDayConfig(currentDay).weekday}
-            index={index}
-            total={deck.length}
-            security={security}
-            productivity={productivity}
-            feedback={feedback}
-            onDecide={handleDecide}
-          />
+          <>
+            <GameScreen
+              card={deck[index]}
+              weekday={getDayConfig(currentDay).weekday}
+              index={index}
+              total={deck.length}
+              security={security}
+              productivity={productivity}
+              feedback={feedback}
+              onDecide={handleDecide}
+              tickets={ticketsToday}
+              onToggleChore={handleToggleChore}
+              onResolveTicket={handleResolveTicket}
+              activeTab={activeTab}
+              onChangeTab={setActiveTab}
+              paused={paused}
+            />
+            {paused && (
+              <PauseMenu
+                security={security}
+                productivity={productivity}
+                weekday={getDayConfig(currentDay).weekday}
+                onResume={() => setPaused(false)}
+                onQuitToMenu={() => {
+                  setPaused(false);
+                  setScreen('start');
+                }}
+              />
+            )}
+          </>
         )}
 
         {screen === 'day-summary' && (
@@ -145,6 +274,7 @@ export default function App() {
             mistakes={mistakesToday}
             security={security}
             productivity={productivity}
+            unfinishedTickets={unfinishedTicketsToday}
             annaLine={getEndOfDayLine(mistakesToday)}
             isLastDay={currentDay === DAYS.length}
             onContinue={handleDaySummaryContinue}

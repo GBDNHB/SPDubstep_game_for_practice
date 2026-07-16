@@ -3,6 +3,10 @@ import type { Action, Card, Outcome } from './types';
 /** Штраф за одну ошибку. Вынесен в константу для настройки баланса. */
 export const PENALTY = 10;
 export const WIN_THRESHOLD = 70;
+/** Штраф продуктивности за один незакрытый до конца дня тикет. */
+export const TICKET_PENALTY = 5;
+/** Штраф безопасности за неверно разрешённый тикет-решение. */
+export const TICKET_MISTAKE_PENALTY = 5;
 
 export function clamp(value: number): number {
   return Math.max(0, Math.min(100, value));
@@ -68,4 +72,9 @@ export function checkInstantOutcome(security: number, productivity: number): Out
 export function checkFinalOutcome(security: number, productivity: number): Outcome {
   if (security > WIN_THRESHOLD && productivity > WIN_THRESHOLD) return 'win';
   return 'neutral';
+}
+
+/** Штраф продуктивности за незакрытые к концу дня тикеты. */
+export function applyTicketPenalty(productivity: number, unfinishedCount: number): number {
+  return clamp(productivity - unfinishedCount * TICKET_PENALTY);
 }
